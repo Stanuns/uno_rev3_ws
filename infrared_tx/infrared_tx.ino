@@ -16,10 +16,10 @@ void setup(){
 
 void loop(){
   // 发送红外编码值
-  irsend1.sendNEC(0xFF00,0x33,0);
+  irsend1.sendNEC(0xFF30,0x33,0);
   delay(16);
-  irsend2.sendNEC(0xFF00,0x55,0);
+  irsend2.sendNEC(0xFF50,0x55,0);
   delay(16);
-  irsend3.sendNEC(0xFF00,0x77,0);
+  irsend3.sendNEC(0xFF70,0x77,0);
   delay(16);
 }
