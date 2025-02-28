@@ -1,47 +1,40 @@
-#include <IRremote.h>  // 使用v3.x以上版本的IRremote库
-
-#define IR_RECEIVE_PIN 11  // 红外接收模块信号引脚（如VS1838B）
+#include <IRremote.h> //IRremote 4.4.1
+#define RECV_PIN_1 2
+#define RECV_PIN_2 3
+IRrecv irReceiver1(RECV_PIN_1);
+IRrecv irReceiver2(RECV_PIN_2);
 
 void setup() {
-  Serial.begin(9600);         // 初始化串口
-  IrReceiver.begin(IR_RECEIVE_PIN, ENABLE_LED_FEEDBACK);  // 启动接收，启用板载LED反馈
-  Serial.println("红外接收器已启动，等待信号...");
+  Serial.begin(9600);
+  // irReceiver1.begin(RECV_PIN_1, true); // 仅保留必要参数
+  irReceiver1.enableIRIn(); // 仅保留必要参数
+  // delay(1000);
+  irReceiver2.enableIRIn(); // 仅保留必要参数
+  delay(1000);
+  Serial.println("--------IR Ready-------"); 
 }
 
 void loop() {
-  if (IrReceiver.decode()) {  // 检测是否收到信号
-    printIRInfo();            // 打印解码信息
-    IrReceiver.resume();      // 继续接收下一个信号
-  }
-  delay(100);  // 降低CPU负载
-}
-
-// 自定义函数：打印红外信号详细信息
-void printIRInfo() {
-  Serial.println("\n--- 红外信号解码结果 ---");
-  
-  // 1. 协议类型
-  Serial.print("协议: ");
-  switch (IrReceiver.decodedIRData.protocol) {
-    case NEC: Serial.println("NEC"); break;
-    case SONY: Serial.println("SONY"); break;
-    case RC5: Serial.println("RC5"); break;
-    case RC6: Serial.println("RC6"); break;
-    case UNKNOWN: Serial.println("未知协议"); break;
-    default: Serial.println("其他协议"); break;
+  // Serial.println("------------------------- ");
+  if (irReceiver1.decode()) {
+    Serial.print("Receiver1 ");
+    Serial.print(irReceiver1.decodedIRData.protocol);
+    Serial.print(" 地址码: 0x");
+    Serial.print(irReceiver1.decodedIRData.address, HEX);
+    Serial.print(" 命令码: 0x");
+    Serial.println(irReceiver1.decodedIRData.command, HEX);
+    delay(50);
+    irReceiver1.resume();
   }
 
-  // 2. 原始数据值（HEX格式）
-  Serial.print("数据值 (HEX): 0x");
-  Serial.println(IrReceiver.decodedIRData.decodedRawData, HEX);
-
-  // 3. NEC协议解析（地址码和命令码）
-  if (IrReceiver.decodedIRData.protocol == NEC) {
-    Serial.print("地址码: 0x");
-    Serial.println(IrReceiver.decodedIRData.address, HEX);
-    Serial.print("命令码: 0x");
-    Serial.println(IrReceiver.decodedIRData.command, HEX);
+  if (irReceiver2.decode()) {
+    Serial.print("Receiver2 ");
+    Serial.print(irReceiver2.decodedIRData.protocol);
+    Serial.print(" 地址码: 0x");
+    Serial.print(irReceiver2.decodedIRData.address, HEX);
+    Serial.print(" 命令码: 0x");
+    Serial.println(irReceiver2.decodedIRData.command, HEX);
+    delay(50);
+    irReceiver2.resume();
   }
-
-  Serial.println("------------------------");
 }
