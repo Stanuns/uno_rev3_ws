@@ -1,7 +1,7 @@
 #include <IRremote.h>  // IRremote 4.4.1
 
 #define IR_RECEIVE_PIN_1 9 // 红外接收模块信号引脚
-// #define IR_RECEIVE_PIN_2 11  
+// #define IR_RECEIVE_PIN_2 5  
 // #define IR_RECEIVE_PIN_3 13
 
 IRrecv irReceiver1(IR_RECEIVE_PIN_1);
@@ -70,6 +70,7 @@ uint16_t calculateCRC(uint8_t *data, uint16_t length) {
 
 void sendIRData() {
   uint8_t cmd1 = 0;
+  // uint8_t cmd2 = 0;
   uint8_t functionCode = 0X00;
 
   // 处理第一个接收器
@@ -81,8 +82,17 @@ void sendIRData() {
       Serial.println(cmd1, HEX);
     }
   }
-
   irReceiver1.resume();
+
+  // if (irReceiver2.decode()) {
+  //   if (irReceiver2.decodedIRData.protocol == NEC) {
+  //     cmd2 = irReceiver2.decodedIRData.command;
+  //     functionCode = 0x02;
+  //     Serial.print("cmd2值:");
+  //     Serial.println(cmd2, HEX);
+  //   }
+  // }
+  // irReceiver2.resume();
 
   // 构建核心数据（协议+原始数据32位）
   uint8_t coreData[1] = {cmd1};
@@ -101,7 +111,7 @@ void sendIRData() {
   // 构建完整报文
   uint8_t packet[] = {
     0xFF, 0xFE,               // 帧头
-    1 + sizeof(crcData) + 2,      // 数据长度（功能码+核心数据+CRC）
+    sizeof(crcData) + 2,      // 数据长度（功能码+核心数据+CRC）
     functionCode,             // 功能码
     coreData[0],  // 核心数据（1）
     crcLow,           // CRC低字节
@@ -111,6 +121,7 @@ void sendIRData() {
 
   // 发送报文
   Serial.write(packet, sizeof(packet));
+  delay(10);
   //degug
   // Serial.println("\n--- 红外信号解码结果 ---");
   // Serial.println(cmd1, HEX);
