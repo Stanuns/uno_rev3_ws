@@ -20,7 +20,7 @@ void setup() {
 void loop() {
   // printIRInfo();
   sendIRData();
-  delay(50);
+  delay(100);
 }
 
 // 自定义函数：打印红外信号详细信息
