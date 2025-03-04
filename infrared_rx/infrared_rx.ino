@@ -1,6 +1,6 @@
 #include <IRremote.h>  // IRremote 4.4.1
 
-#define IR_RECEIVE_PIN_1 9 // 红外接收模块信号引脚
+#define IR_RECEIVE_PIN_1 2 // 红外接收模块信号引脚
 // #define IR_RECEIVE_PIN_2 5  
 // #define IR_RECEIVE_PIN_3 13
 
@@ -20,7 +20,7 @@ void setup() {
 void loop() {
   // printIRInfo();
   sendIRData();
-  delay(100);
+  // delay(2);
 }
 
 // 自定义函数：打印红外信号详细信息
@@ -121,7 +121,7 @@ void sendIRData() {
 
   // 发送报文
   Serial.write(packet, sizeof(packet));
-  delay(10);
+  delay(50);
   //degug
   // Serial.println("\n--- 红外信号解码结果 ---");
   // Serial.println(cmd1, HEX);
